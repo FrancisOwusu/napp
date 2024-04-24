@@ -1,0 +1,47 @@
+{
+  "name": "napp",
+  "version": "1.0.0",
+  "description": "Project for enhancing my knowledge in node js express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrancisOwusu/napp.git"
+  },
+  "keywords": [
+    "node",
+    "js",
+    "express",
+    "js"
+  ],
+  "author": "Francis Osei Owusu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FrancisOwusu/napp/issues"
+  },
+  "homepage": "https://github.com/FrancisOwusu/napp#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "bull": "^4.12.2",
+    "chai": "^5.1.0",
+    "chai-http": "^4.4.0",
+    "chai-superagent": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "dotenv-extended": "^2.9.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mocha": "^10.4.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.4",
+    "nodemailer": "^6.9.13",
+    "nodemailer-express-handlebars": "^6.1.2",
+    "sequelize": "^6.37.2",
+    "supertest": "^6.3.4"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
+  }
+}
