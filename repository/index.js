@@ -1,6 +1,6 @@
 
 module.exports={
 UserRepository:require('./userRepository'),
-RoleRepository:require('./roleRepository')
-
+RoleRepository:require('./roleRepository'),
+CategoryRepository:require('./categoryRepository')
 }
