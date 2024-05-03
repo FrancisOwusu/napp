@@ -5,4 +5,5 @@ module.exports ={
     EmailService:require('./emailService'),
     RoleService:require('./roleService'),
     CategoryService:require('./categoryService'),
+    PermissionService: require('./permissionService')
 }

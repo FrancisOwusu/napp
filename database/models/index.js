@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
+const user = require('./user');
+const role_permission = require('./role_permission');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../../config/config.json')[env];
@@ -28,8 +30,11 @@ fs
     );
   })
   .forEach(file => {
+  console.log(file)
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    // console.log(model);
     db[model.name] = model;
+
   });
 
   // Run associations if defined
@@ -42,8 +47,23 @@ Object.keys(db).forEach(modelName => {
 // sequelize.sync({ /* sync options */ }).then(() => {
 //  console.log("all d")
 // });
+
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-// console.log(db.models)
+
+user.associate = (models) => {
+  user.belongsToMany(models.role, { through: "RoleUser" });
+};
+
+ role_permission.associate = models => {
+  role_permission.belongsTo(models.role, { foreignKey: 'role_id' });
+  role_permission.belongsTo(models.permission, { foreignKey: 'permission_id' });
+  };
+
+
+db.Role.hasMany(db.User,{targetKey:'id',foreignKey:'user_id'});
+db.User.belongsTo(db.Role,{targetKey:'id',foreignKey:'user_id'});
+//Relationship.
 module.exports =db;
 

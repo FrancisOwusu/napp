@@ -19,8 +19,14 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Permission',
     paranoid: true,
+    tableName:'permissions',
+    createdAt:'created_at',
+    updatedAt:'updated_at',
     // If you want to give a custom name to the deletedAt column
-    deletedAt: 'destroyTime',
+    deletedAt: 'deleted_at',
   });
+  Permission.associate = models => {
+    Permission.belongsToMany(models.Role, { through: 'RolePermission' });
+  };
   return Permission;
 };

@@ -1,13 +1,10 @@
-class BaseRepository {}
-
+'use strict';
 module.exports = (model) => {
   return {
     // Find all users
     findAll: async (filter={}) => {
       try {
-       return await model.findAll({
-          where: filter,
-        });
+       return await model.findAll(filter);
       } catch (error) {
         throw new Error(error);
       }
