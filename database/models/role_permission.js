@@ -16,10 +16,12 @@ module.exports = (sequelize, DataTypes) => {
  , {
   sequelize,
   modelName: 'RolePermission',
-  tableName:'role_permission'
+  tableName:'role_permission',
+  createdAt: 'created_at',
+  updatedAt:'updated_at',
     // paranoid: true,
     // // If you want to give a custom name to the deletedAt column
-    // deletedAt: 'destroyTime',
+    deletedAt: 'deleted_at',
   });
 
   

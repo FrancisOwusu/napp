@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
-    //  */
+     */
     // static associate(models) {
     //   // define association here
     // this.hasMany(user)
@@ -21,11 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       user_id: {
         type: DataTypes.INTEGER,
-
         references: {
           // This is a reference to another model
           model: user,
-
           // This is the column name of the referenced model
           key: "id",
         },
@@ -51,27 +49,28 @@ module.exports = (sequelize, DataTypes) => {
     Role.belongsToMany(models.User, { through: "RoleUser" });
   };
   // Custom method to get permissions associated with a role
-  Role.prototype.getPermissions = async function() {
+  Role.prototype.getPermissions = async function () {
     const role = this;
     const permissions = await role.getPermissions(); // Using the association alias to fetch permissions
     return permissions;
   };
-  
-  Role.prototype.addPermissions = async function(permissions) {
+
+  Role.prototype.addPermissions = async function (permissions) {
     const currentPermissions = await this.getPermissions(); // Fetching current permissions associated with the role
-    const permissionIdsToAdd = permissions.map(permission => permission.id); // Mapping the permissions array correctly
-  
+    const permissionIdsToAdd = permissions.map((permission) => permission.id); // Mapping the permissions array correctly
+
     // Filter out permissions that are already associated with this role
-    const permissionsToAdd = permissions.filter(permission => !currentPermissions.some(p => p.id === permission.id));
-  
+    const permissionsToAdd = permissions.filter(
+      (permission) => !currentPermissions.some((p) => p.id === permission.id)
+    );
+
     // Associate permissions with this role
     if (permissionsToAdd.length > 0) {
       await this.addPermissions(permissionsToAdd); // Adding permissions to the role
     }
-  
+
     return permissionsToAdd;
   };
-  
+
   return Role;
-  
 };

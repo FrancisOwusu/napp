@@ -2,5 +2,6 @@
 module.exports={
 UserRepository:require('./userRepository'),
 RoleRepository:require('./roleRepository'),
-CategoryRepository:require('./categoryRepository')
+CategoryRepository:require('./categoryRepository'),
+RolePermissionRepository:require('./rolePermissionRepository')
 }

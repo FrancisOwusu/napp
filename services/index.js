@@ -1,3 +1,4 @@
+const RolePermissionService = require('../utils/acmodule');
 
 module.exports ={
     // AuthService:require('./authService'),
@@ -5,5 +6,6 @@ module.exports ={
     EmailService:require('./emailService'),
     RoleService:require('./roleService'),
     CategoryService:require('./categoryService'),
-    PermissionService: require('./permissionService')
+    PermissionService: require('./permissionService'),
+    RolePermissionService:require('./rolePermissionService')
 }
