@@ -1,6 +1,7 @@
 "use strict";
 const { Op } = require("sequelize");
 const Permission = require("../database/models/");
+const { RolePermission } = require("../database/models");
 const PermissionService = require("../services/permissionService");
 const baseService = require("./baseService");
 
@@ -45,10 +46,9 @@ const RolePermissionService = {
       return { role_id: roleId, permission_id: permissionId };
     });
   },
-  save: async (roleId, permissions) => {
+  addPermissionToRole: async (roleId, permissions) => {
     const permissionIds = await getPermissionByIdsByParam(permissions);
     // Check if the association already exists
-
     const existingAssociations = await RolePermissionService.findAll({
       where: {
         role_id: roleId,
@@ -56,10 +56,9 @@ const RolePermissionService = {
       },
       attributes: ["role_id", "permission_id"],
     });
-    // .then((results) => {
-    //   return results.map((result) => result);
-    // });
+
     // Filter out permissionIds that are already associated with the role
+
     const permissionsToAdd = permissionIds.filter(
       (permissionId) =>
         !existingAssociations.some(
@@ -67,13 +66,18 @@ const RolePermissionService = {
         )
     );
 
-    console.log(permissionsToAdd);
-
-    if (existingAssociations.length === 0) {
-      console.log("array is empty");
-    }
-    console.log(existingAssociations.l);
-    return existingAssociations;
+    // Create an array of objects to insert into the RolePermission table
+    const rolePermissionData = permissionsToAdd.map((permissionId) => {
+      return {
+        role_id: roleId,
+        permission_id: permissionId,
+      };
+    });
+    console.log(rolePermissionData);
+    return RolePermission.bulkCreate(rolePermissionData, {
+      fields: ["role_id", "permission_id"],
+      exclude: ["roleId", "permissionId"],
+    });
   },
 };
 

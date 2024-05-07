@@ -1,25 +1,39 @@
 const baseService = require("./baseService");
 const roleRepository = require("../repository/roleRepository");
-const {Role} = require("../database/models");
-const {Permission} = require("../database/models");
-const { PermissionService } = require("../services/permissionService");
-const { where } = require("sequelize");
+const { RolePermissionService } = require("../services/");
+const { RoleService } = require("../services");
+const { RoleRepository } = require("../repository");
 module.exports = {
   ...baseService(roleRepository),
-  async createRoleWithPermissions(role, permissionNames) {
+  async createRoleWithPermissions(roleName, permissionNames) {
     try {
-      if (permissionNames && permissionNames.length > 0) {
-        const permissions = await Permission.findAll({
-          where: { name: permissionNames }
+      
+      let roleRecord = null;
+      const checkRoleExist = await RoleRepository.findOne({
+        where: {
+          name: roleName,
+        },
+      });
+      console.log(checkRoleExist.length);
+      if (checkRoleExist.length === null) {
+        roleRecord = await RoleRepository.save({
+          name: roleName,
+          user_id: 1,
         });
-        //Permission.findAll({ where: { name: permissionNames } });
-        console.log(permissions);
-        await Role.addPermissions(permissions);
+      } else {
+        roleRecord = checkRoleExist;
+      }
+      
+      if (permissionNames && permissionNames.length > 0) {
+       await RolePermissionService.addPermissionToRole(
+            roleRecord.id,
+            permissionNames
+          );
       }
 
-      return role;
+      return roleRecord;
     } catch (error) {
-      throw new Error("Error creating role with permissions" + error);
+      throw new Error(error.stack);
     }
   },
 };

@@ -5,6 +5,7 @@ const {application,mail} = require("./config/app");
 const routes = require("./routes/index");
 const {myLogger,accessControl,authMiddleware} = require("./middleware/");
 
+const authenticate = require('./middleware/authenticate')
 const models = require("./database/models");
 const {UserService,RoleService} = require("./services");
 const {sendMail} = require("./services/emailService");
@@ -103,9 +104,9 @@ dbConnect.sequelize
 
   
 })();
-// const port = ;
 app.use(myLogger);
 // app.use(accessControl)
+
 routes(app);
 app.listen(application.PORT, () => {
   console.log(`Example app listening on port ${application.PORT}`);

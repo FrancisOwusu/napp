@@ -1,8 +1,11 @@
 const express = require('express');
-const app = express();
 const router = express.Router();
+const authenticate = require('../middleware/authenticate');
+router.use(authenticate);
 router.get('/',(req,res)=>{
-res.send('Hello World')
+    const userId = req.user.id;
+    res.json({ message: 'Protected route accessed', userId });
+// res.send('Hello World')
 });
 
 module.exports = router;

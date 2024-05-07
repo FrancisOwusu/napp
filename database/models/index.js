@@ -30,11 +30,8 @@ fs
     );
   })
   .forEach(file => {
-  console.log(file)
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    // console.log(model);
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes)
     db[model.name] = model;
-
   });
 
   // Run associations if defined

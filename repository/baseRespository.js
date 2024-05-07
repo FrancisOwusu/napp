@@ -20,12 +20,13 @@ module.exports = (model) => {
 
     findOne: async (filter) => {
       try {
-        await model.findOne({ where: filter });
+      return  await model.findOne(filter);
       } catch (error) {
         throw new Error(error);
       }
     },
     save: async (data) => {
+      console.log(data)
       try {
        return await model.create(data);
       } catch (error) {
