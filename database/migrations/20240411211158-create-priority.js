@@ -13,15 +13,14 @@ module.exports = {
         type: Sequelize.STRING,
       },
       user_id: {
-        type: Sequelize.DataTypes.INTEGER,
-        references: {
-          model: {
-            tableName: 'users'
-            // schema: 'schema',
-          },
-          key: 'id',
-        },
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model:{
+            tableName: 'users'
+          },
+          key: 'id'
+        }
       },
       created_at: {
         allowNull: false,

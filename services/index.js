@@ -7,5 +7,8 @@ module.exports ={
     RoleService:require('./roleService'),
     CategoryService:require('./categoryService'),
     PermissionService: require('./permissionService'),
-    RolePermissionService:require('./rolePermissionService')
+    RolePermissionService:require('./rolePermissionService'),
+    RoleUserService:require('./roleUserService'),
+    UserPermissionService: require('./userPermissionService'),
+    PriorityService:require('./priorityService')
 }

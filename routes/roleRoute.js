@@ -1,17 +1,16 @@
 'use strict'
 
 var express = require('express');
-const  RoleController  = require('../controllers/roleController');
+const  moduleController  = require('../controllers/roleController');
 
-const Controller = RoleController;
 let router = express.Router();
 
-router.get('/', Controller.findAll);
-router.get('/:id', Controller.findById);
-// router.post('/', Controller.save);
-router.post('/', Controller.createRoleWithPermissions);
-router.put('/:id', Controller.update);
-router.delete('/:id', Controller.delete);
+router.get('/', moduleController.findAll);
+router.get('/:id', moduleController.findById);
+// router.post('/', moduleController.save);
+router.post('/', moduleController.createRoleWithPermissions);
+router.put('/:id', moduleController.update);
+router.delete('/:id', moduleController.delete);
 
 
 module.exports = router;

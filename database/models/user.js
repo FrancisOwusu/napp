@@ -1,12 +1,9 @@
 "use strict";
+
 const { Model, Sequelize } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
       // this.belongsTo(role)
@@ -49,7 +46,22 @@ module.exports = (sequelize, DataTypes) => {
       deletedAt: "deleted_at",
     }
   );
+  // Define custom instance method to add a role to a user
+  // User.prototype.addRole = async function(roleName) {
+  //   try {
+  //       // Find the role by name
+  //       const role = await role.findOne({ where: { name: roleName } });
 
-  
+  //       if (!role) {
+  //           throw new Error(`Role "${roleName}" not found.`);
+  //       }
+
+  //       // Add the role to the user
+  //       await this.addRole(role);
+  //       console.log(`Role "${roleName}" added to user "${this.name}" successfully.`);
+  //   } catch (error) {
+  //       console.error('Error adding role to user:', error);
+  //   }
+  // };
   return User;
 };

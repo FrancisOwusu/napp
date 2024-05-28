@@ -3,7 +3,7 @@ module.exports = (service) => {
   return {
     async findAll(req, res) {
       try {
-        const items = await service.findAll({});
+        const items = await service.findAll();
         res.status(200).json(items);
       } catch (error) {
         res.status(500).json({ message: error.stack });
@@ -44,8 +44,9 @@ module.exports = (service) => {
       try {
         const { id } = req.params;
 
-        await service.delete(id);
-        res.status(204).send({ success: true, data: null});
+      const record =  await service.delete(id);
+      
+        res.status(204).json({ success: true, data:record});
       } catch (error) {
         res.status(500).json({ message: error.message });
       }

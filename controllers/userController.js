@@ -11,30 +11,34 @@ module.exports = {
   ...baseController(UserService),
   findAll: async (req, res) => {
     try {
-      let filter = {
-        // where:{
-        //   first_name:req.first_name?? null
-        // },
-        // // order:[role, 'created_created', 'DESC'],
-        // limit: 10 
-      }??{};
+      let filter =
+        {
+          // where:{
+          //   first_name:req.first_name?? null
+          // },
+          // // order:[role, 'created_created', 'DESC'],
+          // limit: 10
+        } ?? {};
 
       // Query active users along with associated roles
-const items = user.findAll({
-  // where: {
-  //   isActive: true // Assuming isActive is a column in the User model
-  // },
-  // include: [
-  //   {
-  //     model: role,
-  //     through: { attributes: [] } // To exclude the junction table attributes
-  //   }
-  // ]
-}).then(users => {
-  console.log(users);
-}).catch(error => {
-  console.error(error);
-});
+      const items = user
+        .findAll({
+          // where: {
+          //   isActive: true // Assuming isActive is a column in the User model
+          // },
+          // include: [
+          //   {
+          //     model: role,
+          //     through: { attributes: [] } // To exclude the junction table attributes
+          //   }
+          // ]
+        })
+        .then((users) => {
+          console.log(users);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       // const items = await UserService.findAll(filter,
       // {include:role});
       res.status(200).json(items);

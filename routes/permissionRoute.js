@@ -1,14 +1,14 @@
 'use strict'
 
 var express = require('express');
-const { PermissionController } = require('../controllers');
+const moduleController = require('../controllers/permissionController');
 let router = express.Router();
 
-router.get('/', PermissionController.findAll);
-router.get('/:id', PermissionController.findById);
-router.post('/', PermissionController.save);
-router.put('/:id',PermissionController.update);
-router.delete('/:id', PermissionController.delete);
+router.get('/', moduleController.findAll);
+router.get('/:id', moduleController.findById);
+router.post('/', moduleController.save);
+router.put('/:id',moduleController.update);
+router.delete('/:id', moduleController.delete);
 
 
 module.exports = router;

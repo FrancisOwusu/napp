@@ -2,7 +2,7 @@
 module.exports = (model) => {
   return {
     // Find all users
-    findAll: async (filter={}) => {
+    findAll: async (filter) => {
       try {
        return await model.findAll(filter);
       } catch (error) {

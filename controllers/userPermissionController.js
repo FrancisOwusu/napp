@@ -1,10 +1,10 @@
 "use strict";
 const baseController = require("./baseController");
 const  {RoleService}  = require("../services");
-const {RolePermissionService } = require("../services");
+const {UserPermissionService } = require("../services");
 
 module.exports = {
-  ...baseController(RoleService),
+  ...baseController(UserPermissionService),
   async save(req, res) {
     {
       try {
@@ -21,15 +21,18 @@ module.exports = {
       }
     }
   },
-  async createRoleWithPermissions(req, res) {
+  async assignUserToPermissions(req, res) {
     {
     
       try {
-        const { name, permissions } = req.body;
-        const newRecord = await RoleService.createRoleWithPermissions(name,permissions).then(record=>{
+        const { user_id, permissions } = req.body;
+        const newRecord = await UserPermissionService.grantUserPermissions(user_id,permissions).then(record=>{
           return record;
         })
-       res.status(201).json({ success: true, count: newRecord.lenth, data: newRecord});
+    
+        // res.status(201).json(newRecord);
+        
+       res.status(201).json({ success: true, count: newRecord, data: newRecord});
       } catch (error) {
         res.status(500).json(error.stack);
         res.status(400).json({ message: error.message });

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Priority.init({
     name: DataTypes.STRING,
-    userId: {
+    user_id: {
       type: DataTypes.INTEGER,
       references: {
         model: User,
@@ -25,11 +25,14 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
+    tableName:'priorities',
     modelName: 'Priority',
     paranoid: true,
 
     // If you want to give a custom name to the deletedAt column
-    deletedAt: 'destroyTime',
+    createdAt:'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
   });
   return Priority;
 };

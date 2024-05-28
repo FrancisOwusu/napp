@@ -1,36 +1,57 @@
 const baseService = require("./baseService");
 const roleRepository = require("../repository/roleRepository");
-const { RolePermissionService } = require("../services/");
-const { RoleService } = require("../services");
 const { RoleRepository } = require("../repository");
+const models = require("../database/models");
+const { getPermissionByIdsByParam } = require("../utils/acmodule");
+const { getExistingAssocitions } = require("./rolePermissionService");
+
 module.exports = {
   ...baseService(roleRepository),
-  async createRoleWithPermissions(roleName, permissionNames) {
+  createRoleWithPermissions: async (roleName, permissionNames) => {
     try {
-      
       let roleRecord = null;
-      const checkRoleExist = await RoleRepository.findOne({
-        where: {
-          name: roleName,
-        },
+      const existingRole = await RoleRepository.findOne({
+        where: { name: roleName },
       });
-      console.log(checkRoleExist.length);
-      if (checkRoleExist.length === null) {
+
+      if (existingRole) {
+        roleRecord = existingRole;
+      } else {
         roleRecord = await RoleRepository.save({
           name: roleName,
           user_id: 1,
         });
-      } else {
-        roleRecord = checkRoleExist;
       }
-      
+      const roleId = roleRecord.id;
       if (permissionNames && permissionNames.length > 0) {
-       await RolePermissionService.addPermissionToRole(
-            roleRecord.id,
-            permissionNames
-          );
-      }
+        const permissionIds = await getPermissionByIdsByParam(permissionNames);
+        // Check if the association already exists
+        const existingAssociations = await getExistingAssocitions(
+          roleId,
+          permissionIds
+        );
+        // Filter out permissionIds that are already associated with the role
+        const permissionsToAdd = permissionIds.filter(
+          (permissionId) =>
+            !existingAssociations.some(
+              (association) => association.permission_id === permissionId
+            )
+        );
+        // Create an array of objects to insert into the RolePermission table
+        const rolePermissionData = permissionsToAdd.map((permissionId) => {
+          return {
+            role_id: roleId,
+            permission_id: permissionId,
+          };
+        });
 
+        models.RolePermission.bulkCreate(rolePermissionData, {
+          fields: ["role_id", "permission_id"],
+          exclude: ["roleId", "permissionId"],
+        });
+
+        return roleRecord;
+      }
       return roleRecord;
     } catch (error) {
       throw new Error(error.stack);
