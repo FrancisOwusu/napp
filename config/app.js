@@ -14,8 +14,8 @@ module.exports = {
   },
   environment: {
     development: {
-      username: "tuser",
-      password: "admin@1",
+      username: "root",
+      password: "",
       database: "napp_db",
       host: "localhost",
       dialect: "mysql",

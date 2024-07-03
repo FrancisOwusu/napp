@@ -1,5 +1,3 @@
-const permissionRepository = require('./permissionRepository');
-
 module.exports={
 UserRepository:require('./userRepository'),
 RoleRepository:require('./roleRepository'),

@@ -1,4 +1,5 @@
 // controllers/baseController.js
+const {validationResult, matchedData} = require('express-validator')
 module.exports = (service) => {
   return {
     async findAll(req, res) {
@@ -23,6 +24,12 @@ module.exports = (service) => {
       }
     },
     async save(req, res) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        console.log(matchedData(req))
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
       try {
         const newItem = await service.save(req.body);
         res.status(201).json({ success: true, count: newItem.length, data: newItem});

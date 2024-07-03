@@ -76,25 +76,27 @@ dbConnect.sequelize
 //    status: "active",
 //    user_id: 1
 //   }
-// const result = UserController.save(dataObject);
+// const result = UserService.save(dataObject);
 // console.log(result);
-//   // const result = await UserService.save(dataObject);
-//   if(result.email){
-//     console.log("fgf q")
-//     // return await emailQueue.dispatch(result.email,"User Created").catch(console.error)
 
-//   await  emailQueue.dispatch(result.email, "User Created")
-//   .then(() => {
-//     console.log('Email dispatched successfully!');
-//   })
-//   .catch((error) => {
-//     console.error('Error dispatching email:', error);
-//   });
-//     // console.log("fgf e" )
-//     // await sendMail(result.email,"User Created").catch(console.error)
-//     console.log("fgf")
-//     // return sendMail("fowusu1257@gmail.com, fowusu@revogrit.com","Test Mail");
-//   }
+
+  // const result = await UserService.save(dataObject);
+  // if(result.email){
+  //   console.log("fgf q")
+  //   // return await emailQueue.dispatch(result.email,"User Created").catch(console.error)
+
+  // await  emailQueue.dispatch(result.email, "User Created")
+  // .then(() => {
+  //   console.log('Email dispatched successfully!');
+  // })
+  // .catch((error) => {
+  //   console.error('Error dispatching email:', error);
+  // });
+  //   // console.log("fgf e" )
+  //   // await sendMail(result.email,"User Created").catch(console.error)
+  //   console.log("fgf")
+  //   // return sendMail("fowusu1257@gmail.com, fowusu@revogrit.com","Test Mail");
+  // }
 
 //   return console.log(result);
 // } catch (error) {

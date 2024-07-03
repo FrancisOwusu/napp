@@ -6,11 +6,10 @@ const models = require("../database/models");
 const {
   UserPermissionRepository,
   UserRepository,
-  Per,
   PermissionRepository,
   RolePermissionRepository,
 } = require("../repository");
-const { RolePermissionService, PermissionService } = require(".");
+// const { RolePermissionService, PermissionService } = require("../services");
 const getPermissionByIdsByParam = async (permissions) => {
   try {
     return await PermissionRepository.findAll({

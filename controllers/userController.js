@@ -6,6 +6,7 @@ const { hashPassword } = require("../utils/bcrypt");
 const { wrap } = require("../utils/response");
 const role = require("../database/models/role");
 const user = require("../database/models/user");
+const {validationResult, matchedData} = require('express-validator')
 
 module.exports = {
   ...baseController(UserService),
@@ -47,6 +48,11 @@ module.exports = {
     }
   },
   save: async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(matchedData(req))
+      return res.status(400).json({ errors: errors.array() });
+    }
     try {
       const { password } = req.body;
       let hashPas = await hashPassword(password);
