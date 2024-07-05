@@ -14,19 +14,19 @@ module.exports = {
      */
     await queryInterface.bulkInsert("permissions", [
       {
-        name: "create_record",
+        name: "create_role",
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
-        name: "read_record",
+        name: "read_role",
         created_at: new Date(),
         updated_at: new Date(),
       },
-      { name: "update_record" ,
+      { name: "update_role" ,
       created_at: new Date(),
         updated_at: new Date()},
-      { name: "delete_record",
+      { name: "delete_role",
       created_at: new Date(),
         updated_at: new Date() },
     ]);

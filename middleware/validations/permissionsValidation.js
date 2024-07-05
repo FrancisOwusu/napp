@@ -1,4 +1,4 @@
-// userValidation.js
+
 const { body } = require('express-validator');
 const {PermissionService} = require('../../services');
 const { where } = require('sequelize');
@@ -18,15 +18,6 @@ const permissionValidationRules = () => {
           throw new Error('Permission already in use');
         }
       })
-    // body('email')
-    //   .isEmail()
-    //   .withMessage('Email is not valid')
-    //   .normalizeEmail(),
-    // body('password')
-    //   .isLength({ min: 6 })
-    //   .withMessage('Password must be at least 6 characters long')
-    //   .matches(/\d/)
-    //   .withMessage('Password must contain a number')
   ];
 };
 

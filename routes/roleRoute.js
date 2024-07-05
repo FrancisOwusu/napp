@@ -2,6 +2,7 @@
 
 var express = require('express');
 const  moduleController  = require('../controllers/roleController');
+const {roleValidationRules}  = require('../middleware/validations/roleValidation')
 
 let router = express.Router();
 

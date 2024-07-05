@@ -14,16 +14,15 @@ module.exports = {
     try {
       let filter =
         {
-          // where:{
-          //   first_name:req.first_name?? null
-          // },
-          // // order:[role, 'created_created', 'DESC'],
-          // limit: 10
+          where:{
+            first_name:req.first_name?? null
+          },
+          // order:[role, 'created_created', 'DESC'],
+          limit: 10
         } ?? {};
 
       // Query active users along with associated roles
-      const items = user
-        .findAll({
+      const items1 = UserService.findAll({
           // where: {
           //   isActive: true // Assuming isActive is a column in the User model
           // },
@@ -40,8 +39,8 @@ module.exports = {
         .catch((error) => {
           console.error(error);
         });
-      // const items = await UserService.findAll(filter,
-      // {include:role});
+      const items = await UserService.findAll(filter,
+      {include:role});
       res.status(200).json(items);
     } catch (error) {
       res.status(500).json({ message: error.stack });
