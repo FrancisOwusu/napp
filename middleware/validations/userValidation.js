@@ -43,5 +43,5 @@ const userValidationRules = () => {
 };
 
 module.exports = {
-  userValidationRules
+    userValidationRules
 };

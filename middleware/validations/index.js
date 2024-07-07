@@ -1,8 +1,10 @@
 'use strict'
 module.exports = {
-    RoleValidataionRules:require('./roleValidation'),
-    AuthValidataionRules:require('./authValidation'),
-    CategoryValidataionRules:require('./categoryValidation'),
-    PermissionValidataionRules:require('./permissionValidation'),
-    PriorityValidataionRules:require('./priorityValidation'),
+    RoleValidationRules:require('./roleValidation'),
+    AuthValidationRules:require('./authValidation'),
+    CategoryValidationRules:require('./categoryValidation'),
+    PermissionValidationRules:require('./permissionValidation'),
+    PriorityValidationRules:require('./priorityValidation'),
+    TicketValidationRules:require('./ticketValidation'),
+    UserValidationRules:require('./userValidation')
 }
