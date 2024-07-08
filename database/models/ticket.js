@@ -15,22 +15,28 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Ticket.init({
-    title: DataTypes.STRING,
+   title: DataTypes.STRING,
     description: DataTypes.TEXT,
-    ticket_number: DataTypes.STRING,
+    ticket_number:{
+      type:DataTypes.STRING,
+      unique:true
+      
+    },
     user_id: DataTypes.INTEGER,
     assignee_id: DataTypes.INTEGER,
     assigner_id:  DataTypes.INTEGER,
     details: DataTypes.TEXT,
     category_id:  DataTypes.INTEGER,
-    priority_id:DataTypes.INTEGER,
-  }, {
+    priority_id:DataTypes.INTEGER,}, {
     sequelize,
     modelName: 'Ticket',
+    tableName:'tickets',
     paranoid: true,
 
+    createdAt:'created_at',
+    updatedAt:'updated_at',
     // If you want to give a custom name to the deletedAt column
-    deleted_at: 'destroyTime',
+    deletedAt: 'deleted_at',
   });
   return Ticket;
 };

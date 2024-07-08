@@ -1,8 +1,8 @@
 "use strict";
 
 const baseController = require("./baseController");
-const {TicketService } = require("../services");
-const {validationResult, matchedData} = require('express-validator')
+const { TicketService } = require("../services");
+const { validationResult, matchedData } = require("express-validator");
 module.exports = {
   ...baseController(TicketService),
   save: async (req, res) => {
@@ -12,12 +12,13 @@ module.exports = {
       return res.status(400).json({ errors: errors.array() });
     }
     try {
-      // const { password } = req.body;
-      // let hashPas = await hashPassword(password);
-      const userObject = { ...req.body
-      };
+      console.log(req.body);
+      // console.log("https data" + matchedData(req));
+  
+      // console.log(userObject);
+      const newItem = await TicketService.save(req.body);
 
-      const newItem = await TicketService.save(userObject);
+      
       // if (newItem.email) {
       //   EmailService.sendMail(newItem.email, "User Created");
       // }
@@ -29,4 +30,4 @@ module.exports = {
       res.status(400).json({ message: error.message });
     }
   },
-}
+};

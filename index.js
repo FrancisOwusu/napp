@@ -11,10 +11,10 @@ const {UserService,RoleService} = require("./services");
 const {sendMail} = require("./services/emailService");
 const emailQueue = require('./queues/emailQueue');
 const { hashPassword } = require("./utils/bcrypt");
-const {UserController} = require('./controllers')
+// const {UserController} = require('./controllers')
 const bodyParser = require('body-parser');
 
-app.use(express.json());
+
 require("dotenv").config();
 // console.log((require('./database/models/index').Role));
 // console.log(models.Role);
@@ -110,6 +110,7 @@ app.use(myLogger);
 // app.use(accessControl)
 
 routes(app);
+
 app.listen(application.PORT, () => {
   console.log(`Example app listening on port ${application.PORT}`);
 });
