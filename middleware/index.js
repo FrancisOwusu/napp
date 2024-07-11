@@ -1,7 +1,8 @@
 'use strict'
 
-const myLogger = module.exports ={
+module.exports ={
     authMiddleware:require('./authMiddleware'),
     myLogger:require('./logger'),
-    accessControl:require('./accessControl')
+    accessControl:require('./accessControl'),
+    upload:require('./upload')
 }

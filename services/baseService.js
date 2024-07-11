@@ -22,6 +22,13 @@ module.exports = (repository) => {
         throw new Error(error);
       }
     },
+    bulkCreate:async (data) => {
+      try {
+        return await repository.bulkCreate(data);
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
     save: async (data) => {
       try {
         return await repository.save(data);

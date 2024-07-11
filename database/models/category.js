@@ -14,13 +14,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Category.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    user_id:DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Category',
     paranoid: true,
+    tableName:'categories',
     // If you want to give a custom name to the deletedAt column
-    deletedAt: 'destroyTime',
+    createdAt:'created_at',
+    updatedAt:'updated_at',
+    // If you want to give a custom name to the deletedAt column
+    deletedAt: 'deleted_at',
   });
   return Category;
 };

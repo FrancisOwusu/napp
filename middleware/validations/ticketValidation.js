@@ -1,25 +1,22 @@
 // middlewares/ticketValidation.js
-const { body } = require("express-validator");
-const { UserService } = require("../../services");
+const { body,check } = require("express-validator");
+// const { UserService } = require("../../services");
 const ticketValidationRules = () => {
   return [
-    // body("ticket_number"),
-    body("user_id")
-      .notEmpty()
-      // .withMessage("User Id is required")
-      .trim()
-      .escape(),
-    body("details")
-    .notEmpty()
-      // .withMessage("Details are required")
-      .trim(),
-    body("title")
-      // .isString()
-      .notEmpty()
-      // .withMessage("Title or subject is required"),
+    check('title').notEmpty(),
+    body('description').notEmpty(),
+   body('ticket_number').notEmpty(),
+   body('user_id').notEmpty(),
+    body("category_id").notEmpty()
+      .withMessage("Category is required"),
+  
+    body("priority_id").notEmpty()
+      .withMessage("Priorit is required")
   ];
 };
 
 module.exports = {
   ticketValidationRules,
 };
+
+

@@ -49,9 +49,9 @@ module.exports = {
   save: async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(matchedData(req))
       return res.status(400).json({ errors: errors.array() });
     }
+    
     try {
       const { password } = req.body;
       let hashPas = await hashPassword(password);

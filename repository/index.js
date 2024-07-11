@@ -7,5 +7,6 @@ RoleUserRepositroy:require('./roleUserRepository'),
 UserPermissionRepository:require('./userPermissionRepository'),
 PermissionRepository: require('./permissionRepository'),
 PriorityRepository:require('./priorityRepository'),
-TicketRepository:require('./ticketRepository')
+TicketRepository:require('./ticketRepository'),
+TicketFileRepository:require('./ticketFileRepository')
 }

@@ -1,3 +1,4 @@
+const { TicketFileRepository } = require('../repository');
 
 module.exports ={
     // AuthService:require('./authService'),
@@ -10,5 +11,6 @@ module.exports ={
     RoleUserService:require('./roleUserService'),
     UserPermissionService: require('./userPermissionService'),
     PriorityService:require('./priorityService'),
-    TicketService: require('./ticketService')
+    TicketService: require('./ticketService'),
+    TicketFileService:require('./ticketFileService')
 }

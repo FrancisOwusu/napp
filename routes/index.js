@@ -2,6 +2,7 @@ module.exports = (app) => {
   app.use("/", require("./welcomeRoute"));
   app.use("/users", require("./userRoute"));
   app.use("/roles", require("./roleRoute"));
+  app.use("/categories", require("./categoryRoute"));
   app.use("/permissions", require("./permissionRoute"));
   app.use("/roleusers", require("./roleUserRoute"));
   app.use("/userpermissions", require("./userPermissionRoute"));

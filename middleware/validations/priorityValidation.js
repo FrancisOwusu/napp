@@ -5,7 +5,7 @@ const { where } = require('sequelize');
 const priorityValidationRules = () => {
   return [
     body('name')
-      .isLength({ min: 5 })
+      .isLength({ min: 4})
       .withMessage('name must be at least 5 characters long')
       .trim()
       .escape()
