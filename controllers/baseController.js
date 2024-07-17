@@ -2,9 +2,10 @@
 const {validationResult, matchedData} = require('express-validator')
 module.exports = (service) => {
   return {
-    async findAll(req, res) {
+    async findAll(req,res) {
       try {
-        const items = await service.findAll();
+        const filter = req.query.filter || {};
+        const items = await service.findAll(filter);
         res.status(200).json(items);
       } catch (error) {
         res.status(500).json({ message: error.stack });

@@ -2,7 +2,8 @@
 const {
   Model
 } = require('sequelize');
-const User = require('./../models/user')
+const User = require('./../models/user');
+
 module.exports = (sequelize, DataTypes) => {
   class Priority extends Model {
     /**
@@ -34,5 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
   });
+  Priority.associate=models=>{
+    Priority.hasMany(models.Ticket,{foreignKey:'priority_id'});
+  }
   return Priority;
 };

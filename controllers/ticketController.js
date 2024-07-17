@@ -1,79 +1,128 @@
 "use strict";
 
 const baseController = require("./baseController");
-const { TicketService,TicketFileService} = require("../services");
-const {validationResult, matchedData} = require('express-validator');
-const {upload,uploadMiddleware} = require('../middleware/upload')
+const { application } = require("../config/app");
+const { TicketService, TicketFileService } = require("../services");
+const { validationResult, matchedData } = require("express-validator");
+const { upload, uploadMiddleware } = require("../middleware/upload");
+const ticketFileService = require("../services/ticketFileService");
+const path = require("path");
+const { where } = require("sequelize");
+
+const models = require("../database/models/index");
 module.exports = {
   ...baseController(TicketService),
-  save:async (req, res) => {
-    
+  findAll: async (req, res) => {
     try {
-       // if (!data.title || !data.description) {
-        //     return res.status(400).json({ error: 'Title and description are required' });
-        // }
-       upload(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ error: err });
-        }
-        const errors = validationResult(req);
+      const items = await TicketService.findAll({
+        // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
+        include: [
+          {
+            model: models.Category,as:'category',// Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.Priority,as:'priority',// Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,as:'user',// Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+        ],
+      });
+
+      res.status(200).json(items);
+    } catch (error) {
+      res.status(500).json({ message: error.stack });
+    }
+  },
+  save: async (req, res) => {
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    let data = matchedData(req); // Get the matched data from the request
+    data.ticket_number = Math.floor(Math.random() * 9000000) + 1000000;
 
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ error: 'No files selected' });
-        }
+    try {
+      const newTicket = await module.exports.createTicket(data);
+      if (newTicket) {
+        upload(req, res, async (err) => {
+          if (err) {
+            console.log(err);
+            throw new Error(err.message);
+            // return res.status(400).json({ error: err.tr });
+          }
 
+          // if (newTicket.id) {
+          // ticketFiles = req.file.map((file) => ({
+          //   filePath: application.URL + "/" + file.path,
+          //   ticket_id: newTicket.id,
+          // }));
 
-       
-        // const newTicket = await TicketService.save(data);
-        // const newTicket = await Ticket.create({
-        //     title: title,
-        //     subject: subject
-        // });
-
-        const ticketFiles = req.files.map(file => ({
-            filePath: file.path,
-            // ticketId: newTicket.id
-        }));
-        // await TicketFileService.bulkCreate(ticketFiles)
-
-    console.log(ticketFiles)
-        res.json({
-            message: 'Ticket and files uploaded successfully',
-            // ticket: newTicket,
-            files: ticketFiles
+          let ticketFileObject = {
+            filepath: application.URL + "/" + req.file.path,
+            ticket_id: newTicket.id,
+            filename: req.file.filename,
+          };
+          // }
+          await TicketFileService.save(ticketFileObject);
+          console.log(ticketFileObject);
+          // const ticketFileRecord = await TicketFileService.bulkCreate(
+          //   ticketFiles
+          // );
+          // let ticketFiles = req.files;
+          // const ticketFileRecord=  await TicketFileService.bulkCreate(ticketFiles)
+          res.json({
+            message: "Ticket and files uploaded successfully",
+            ticket: newTicket,
+            // ticketFiles: ticketFileRecord,
+            // files: req.file,
+          });
         });
-    });
+      }
     } catch (error) {
-      new Error(error)
       res.status(400).json({ message: error.message });
     }
     // ************
-    // try {
+  },
+  createTicket: async (data) => {
+    try {
+      data.ticket_number = Math.floor(Math.random() * 9000000) + 1000000;
+      return await TicketService.save(data);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+  downloadFile: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const ticketFile = await TicketFileService.findOne({
+        where: {
+          ticket_id: id,
+        },
+      });
 
+      if (!ticketFile) {
+        return res.status(404).json({ error: "File not found" });
+      }
 
-
-    //   let data = matchedData(req);  // Get the matched data from the request
-    //  console.log(data)
-     
-     
-    //   data.ticket_number = Math.floor(Math.random() * 9000000) + 1000000;
-
-
-     
-    //   // Math.floor(Math.random().toString(36).substring(2,6).toUpperCase() * 90000000);
-    // //   console.log(data.ticket_number)
-    // //  const newItem = await TicketService.save(data);
-  
-    //   res.status(201).json({ success: true, message: "Ticket Created", data: newItem });
-    // } catch (error) {
-    //   console.log(error);
-    //   res.status(400).json({ message: error.message });
-    // }
-  }
-  
-
-
+      const directoryPath = __basedir + "/public/uploads/tickets/";
+      res.download(
+        directoryPath + ticketFile.filename,
+        ticketFile.filename,
+        (err) => {
+          if (err) {
+            res.status(500).send({
+              message: "Could not download the file. " + err.message,
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error downloading file:", error.message);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };

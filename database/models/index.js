@@ -46,6 +46,7 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db);
   }
 });
+
 // Sync all models with the database
 // async function syncModels() {
 //   try {
@@ -90,12 +91,18 @@ db.Role.belongsToMany(db.Permission, {
 });
 db.Role.hasMany(db.User, { targetKey: "id", foreignKey: "user_id" });
 db.User.belongsTo(db.Role, { targetKey: "id", foreignKey: "user_id" });
+
+// db.Ticket.hasOne(db.TicketFIle);
+// db.TicketFIle.belongsTo(db.Ticket);
+
+// db.Category.hasMany(db.Ticket);
+// db.Ticket.hasMany(db.Category);
 //Relationship.
 
 // Sync all models with the database
 // async function syncModels() {
 //   try {
-//       await sequelize.sync({ force: true });
+//       await Sequelize.sync({ force: true });
 //       console.log('Models synchronized successfully.');
 //   } catch (error) {
 //       console.error('Error synchronizing models:', error);

@@ -21,12 +21,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'TicketFile',
-    paranoid: true,
+    tableName:'ticket_files',
+    // paranoid: true,
 
     createdAt:'created_at',
     updatedAt:'updated_at',
     // If you want to give a custom name to the deletedAt column
-    deletedAt: 'deleted_at',
+    // deletedAt: 'deleted_at',
   
   });
   return TicketFile;
