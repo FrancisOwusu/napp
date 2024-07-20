@@ -2,7 +2,12 @@
 
 const baseController = require("./baseController");
 const { application } = require("../config/app");
-const { TicketService, TicketFileService } = require("../services");
+const {Op} = require('sequelize')
+const {
+  TicketService,
+  TicketFileService,
+  UserService,
+} = require("../services");
 const { validationResult, matchedData } = require("express-validator");
 const { upload, uploadMiddleware } = require("../middleware/upload");
 const ticketFileService = require("../services/ticketFileService");
@@ -18,16 +23,19 @@ module.exports = {
         // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
         include: [
           {
-            model: models.Category,as:'category',// Ensure you have required association defined
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
             attributes: ["id", "name"], // Include necessary attributes from associated model
           },
           {
-            model: models.Priority,as:'priority',// Ensure you have required association defined
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
             attributes: ["id", "name"], // Include necessary attributes from associated model
           },
           {
-            model: models.User,as:'user',// Ensure you have required association defined
-            attributes: ["id", "name"], // Include necessary attributes from associated model
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
           },
         ],
       });
@@ -93,6 +101,55 @@ module.exports = {
       return await TicketService.save(data);
     } catch (error) {
       throw new Error(error.message);
+    }
+  },
+  assignTicketToUser: async (req, res) => {
+    try {
+      const { ticketId, userId } = req.body;
+
+      if (!ticketId || !userId) {
+        return res
+          .status(400)
+          .json({ error: "Ticket ID and User ID are required" });
+      }
+      // Find the ticket
+      const ticket = await TicketService.findOne({
+        where: {
+          assignee_id: {
+            [Op.ne]: null,
+          },
+        },
+      });
+
+      if (!ticket) {
+        return res.status(404).json({ error: "Ticket not found" });
+      }
+
+      // Find the user
+      const user = await UserService.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      // Assign the ticket to the user
+      const assignedTicket = await TicketService.update(ticket.id, {
+        assignee_id: user.id,
+      });
+      // const assignedTicket = await TicketService.assignTicketToUser(ticketId, userId);
+      if (assignedTicket) {
+        res.status(200).json({
+          message: "Ticket assigned to user successfully",
+          ticket: ticket,
+        });
+      }
+
+      res.status(400).json({
+        message: "Unable to assign ticket to a user",
+        assignedTicket,
+      });
+    } catch (error) {
+      console.error("Error assigning ticket to user:", error.message);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
   downloadFile: async (req, res) => {
