@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 require("dotenv").config();
-
+const path = require('path')
 const dbConnect = require("./config/db");
 const { application } = require("./config/app");
 const routes = require("./routes");
@@ -9,13 +9,13 @@ const { myLogger, accessControl, authMiddleware } = require("./middleware");
 
 const app = express();
 
-// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(myLogger);
 // app.use(accessControl);
 // app.use(authMiddleware);
-
+// Define __basedir
+global.__basedir = path.resolve(__dirname);
 // Routes
 routes(app);
 

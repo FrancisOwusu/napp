@@ -2,6 +2,7 @@ module.exports = (repository) => {
   return {
     findAll: async (filter) => {
       try {
+  
         return await repository.findAll(filter);
       } catch (error) {
         throw new Error(error);
@@ -24,6 +25,7 @@ module.exports = (repository) => {
     },
     bulkCreate:async (data) => {
       try {
+        console.log(data)
         return await repository.bulkCreate(data);
       } catch (error) {
         throw new Error(error);

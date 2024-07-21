@@ -27,5 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     // If you want to give a custom name to the deletedAt column
     deletedAt: 'deleted_at',
   });
+
+  Category.associate = models => {
+    Category.hasMany(models.Ticket,{foreignKey:'category_id'});
+  };
   return Category;
 };
