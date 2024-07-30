@@ -6,12 +6,15 @@ const dbConnect = require("./config/db");
 const { application } = require("./config/app");
 const routes = require("./routes");
 const { myLogger, accessControl, authMiddleware } = require("./middleware");
-
+const limiter = require("./middleware/rateLimiter")
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(myLogger);
+
+//rate limiter
+app.use(limiter)
 // app.use(accessControl);
 // app.use(authMiddleware);
 // Define __basedir

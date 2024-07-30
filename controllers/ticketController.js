@@ -130,7 +130,7 @@ module.exports = {
   },
   assignTicketToUser: async (req, res) => {
     try {
-      const { ticketId, userId } = req.body;
+      const { ticketId, userId,assignerId } = req.body;
 
       if (!ticketId || !userId) {
         return res
@@ -163,7 +163,7 @@ module.exports = {
       // Assign the ticket to the user
       const [updateCount] = await TicketService.update(ticketId, {
         assignee_id: user.id,
-        assigneer,
+        assigneer_id:assignerId,
       });
 
       if (updateCount > 0) {
@@ -181,7 +181,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      console.error("Error assigning ticket to user:", error.message);
+      console.error("Error assigning ticket to user:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
