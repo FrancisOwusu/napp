@@ -1,36 +1,48 @@
-// middleware/authenticate.js
+const jwt = require('jsonwebtoken');
+const  userService = require('../services/userService'); // Example user service
 
 function authenticate(req, res, next) {
-  // Assuming you have a way to extract the user ID from the request, such as a JWT token
-  const userId = extractUserIdFromRequest(req);
+  try {
+    const token = req.headers.authorization.split(' ')[1];
 
-  // Check if the user ID is valid (e.g., exists in the database)
-  if (!isValidUserId(userId)) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    // if (
+    //   req.headers.authorization &&
+    //   req.headers.authorization.split(" ")[0] === "Bearer"
+    // ) {
+    //   return req.headers.authorization.split(" ")[1];
+    // } else if (req.query && req.query.token) {
+    //   return req.query.token;
+    // }
+  
+
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    // Check if the user ID is valid (e.g., exists in the database)
+    if (!isValidUserId(userId)) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // Attach the user ID to req.user
+    req.user = { id: userId };
+
+    // Call next middleware or route handler
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Unauthorized', error: error.message });
   }
-
-  // Attach the user ID to req.user
-  req.user = { id: userId };
-
-  // Call next middleware or route handler
-  next();
-}
-
-// Example function to extract user ID from the request (e.g., from JWT token)
-function extractUserIdFromRequest(req) {
-  // Implementation specific to your application
-  // For example, if you're using JWT:
-  // const token = req.headers.authorization.split(' ')[1];
-  // const decodedToken = jwt.verify(token, 'your_secret_key');
-  // return decodedToken.userId;
-  return 1; // Dummy user ID for demonstration
 }
 
 // Example function to check if the user ID is valid (e.g., exists in the database)
-function isValidUserId(userId) {
-  // Implementation specific to your application
-  // Check if the user ID exists in the database
-  return true; // Dummy implementation for demonstration
+async function isValidUserId(userId) {
+  try {
+    const user = await userService.findById(userId);
+    return !!user; // Return true if user exists, false otherwise
+  } catch (error) {
+    console.error('Error checking user ID:', error);
+    return false;
+  }
 }
 
 module.exports = authenticate;

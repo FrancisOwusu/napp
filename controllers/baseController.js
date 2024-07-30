@@ -1,14 +1,38 @@
 // controllers/baseController.js
-const {validationResult, matchedData} = require('express-validator')
+const { validationResult, matchedData } = require("express-validator");
+const responseUtil = require("../utils/responseUtil");
 module.exports = (service) => {
   return {
-    async findAll(req,res) {
+    async findAll(req, res) {
       try {
         const filter = req.query.filter || {};
         const items = await service.findAll(filter);
-        res.status(200).json(items);
+        // res.status(200).json({success:true,data:items});
+        if (!items) {
+          return responseUtil.sendResponse(
+            res,
+            404,
+            true,
+            "Resource not found"
+          );
+        }
+        responseUtil.sendResponse(
+          res,
+          200,
+          true,
+          "Resoruce fetched successfully",
+          tickets
+        );
       } catch (error) {
-        res.status(500).json({ message: error.stack });
+        console.error("Error fetching data:", error);
+        responseUtil.sendResponse(
+          res,
+          500,
+          false,
+          "Internal server error",
+          null,
+          error.message
+        );
       }
     },
     async findById(req, res) {
@@ -16,9 +40,15 @@ module.exports = (service) => {
         const { id } = req.params;
         const item = await service.findById(id);
         if (!item) {
-          res.status(404).json({ message: "Item not found" });
+          responseUtil.sendResponse(res, 404, false, "Resource not found");
         } else {
-          res.status(200).json({ success: true, count: item.length, data: item});
+          responseUtil.sendResponse(
+            res,
+            200,
+            true,
+            "data fetch successfully",
+            item
+          );
         }
       } catch (error) {
         res.status(500).json({ message: error.message });
@@ -27,35 +57,83 @@ module.exports = (service) => {
     async save(req, res) {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return responseUtil.sendResponse(
+          res,
+          500,
+          "Error creating a resource",
+          null,
+          error.message
+        );
       }
-  
+
       try {
         const newItem = await service.save(req.body);
-        res.status(201).json({ success: true, count: newItem.length, data: newItem});
+        responseUtil.sendResponse(
+          res,
+          201,
+          true,
+          "Resource created successfully",
+          newItem
+        );
       } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: error.message });
+        console.error("Error creating ticket:", error);
+        responseUtil.sendResponse(
+          res,
+          500,
+          false,
+          "Internal server error",
+          null,
+          error.message
+        );
       }
     },
     async update(req, res) {
       try {
         const { id } = req.params;
+        const item = await service.findById(id);
+
+        if (!item) {
+          return responseUtil.sendResponse(res, 404, "Resource not found");
+        }
         const updatedItem = await service.update(id, req.body);
-        res.status(200).json({ success: true, count: updatedItem.length, data: updatedItem});
+        responseUtil.sendResponse(
+          res,
+          200,
+          true,
+          "Resource updated successfully",
+          updatedItem
+        );
       } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("resource ", error);
+        responseUtil.sendResponse(
+          res,
+          500,
+          false,
+          "Internal server error",
+          null,
+          error.message
+        );
       }
     },
     async delete(req, res) {
       try {
         const { id } = req.params;
-
-      const record =  await service.delete(id);
-      
-        res.status(204).json({ success: true, data:record});
-      } catch (error) {
-        res.status(500).json({ message: error.message });
+        const checkRecord = await service.findById(id);
+        if (!checkRecord) {
+          return responseUtil.sendResponse(res, 404,false, "Resource not found");
+        }
+        const record = await service.delete(id);
+        responseUtil.sendResponse(res,200,true,"Resource deleted successfully",record)
+    } catch (error) {
+        console.error("Error deleting a resource:", error);
+        sendResponse(
+          res,
+          500,
+          false,
+          "Internal server error",
+          null,
+          error.message
+        );
       }
     },
   };

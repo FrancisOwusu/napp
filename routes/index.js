@@ -1,5 +1,8 @@
+"use strict"
+const authenticate = require("../middleware/authenticate");
 module.exports = (app) => {
   app.use("/", require("./welcomeRoute"));
+  app.use("/auth",require("./authRoute"));
   app.use("/users", require("./userRoute"));
   app.use("/roles", require("./roleRoute"));
   app.use("/categories", require("./categoryRoute"));

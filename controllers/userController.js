@@ -3,7 +3,7 @@
 const baseController = require("./baseController");
 const { UserService, EmailService } = require("../services");
 const { hashPassword } = require("../utils/bcrypt");
-const { wrap } = require("../utils/response");
+// const { wrap } = require("../utils/response");
 const role = require("../database/models/role");
 const user = require("../database/models/user");
 const { validationResult, matchedData } = require("express-validator");

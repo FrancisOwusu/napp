@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Ticket extends Model {
     /**
@@ -54,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "user_id",
       as: "user",
     });
+    Ticket.belongsTo(models.User,{
+      foreignKey:"assignee_id",
+      as:"ticket_assignee"
+    })
   };
   return Ticket;
 };
