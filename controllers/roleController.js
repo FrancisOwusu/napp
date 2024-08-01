@@ -2,7 +2,7 @@
 const baseController = require("./baseController");
 const  {RoleService}  = require("../services");
 const {RolePermissionService } = require("../services");
-
+const  httpCodes= require('../middleware/httpCodes');
 module.exports = {
   ...baseController(RoleService),
   async save(req, res) {
@@ -14,10 +14,10 @@ module.exports = {
           permissions
         );
         res
-          .status(201)
+          .status(httpCodes.CREATED.code)
           .json({ success: true, count: newRecord.length, data: newRecord });
       } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(httpCodes.INTERNAL_SERVER_ERROR.code).json({ message: error.message });
       }
     }
   },
@@ -29,10 +29,9 @@ module.exports = {
         const newRecord = await RoleService.createRoleWithPermissions(name,permissions).then(record=>{
           return record;
         })
-       res.status(201).json({ success: true, count: newRecord.lenth, data: newRecord});
+       res.status(httpCodes.CREATED.code).json({ success: true, count: newRecord.lenth, data: newRecord});
       } catch (error) {
-        res.status(500).json(error.stack);
-        res.status(400).json({ message: error.message });
+        res.status(httpCodes.INTERNAL_SERVER_ERROR.code).json({ message: error.message });
       }
     }
   }
