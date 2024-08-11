@@ -6,11 +6,11 @@ module.exports = {
   ...baseRepository(models.Ticket),
   // const { Ticket, User } = require('../models');
 
-  assignTicketToUser: async (ticketId, userId) => {
+  assignTicketToUser: async (ticketId, data) => {
     try {
       // Assign the ticket to the user
      return await models.Ticket.update(
-        { assignee_id: userId },
+        data,
         {
           where: {
             id: ticketId,

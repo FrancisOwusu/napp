@@ -24,6 +24,7 @@ function authenticate(req, res, next) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    
     // Attach the user ID to req.user
     req.user = { id: userId };
 

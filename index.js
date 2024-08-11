@@ -13,8 +13,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(myLogger);
 
-//rate limiter
-app.use(limiter)
+//rate
+// app.use(limiter)
 // app.use(accessControl);
 // app.use(authMiddleware);
 // Define __basedir

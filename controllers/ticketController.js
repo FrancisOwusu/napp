@@ -16,10 +16,12 @@ const { where } = require("sequelize");
 const responseUtil = require("../utils/responseUtil");
 const models = require("../database/models/index");
 const { paginateAndSort } = require("../middleware/paginationAndSorting");
+const { request } = require("http");
 module.exports = {
   ...baseController(TicketService),
   findAll: async (req, res) => {
     try {
+      console.log(req.user.id)
       const tickets = await TicketService.findAll({
         // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
         include: [
@@ -41,6 +43,11 @@ module.exports = {
           {
             model: models.User,
             as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
             attributes: ["id", "first_name"], // Include necessary attributes from associated model
           },
         ],
@@ -130,7 +137,8 @@ module.exports = {
   },
   assignTicketToUser: async (req, res) => {
     try {
-      const { ticketId, userId,assignerId } = req.body;
+      console.log(req.user.id);
+      const { ticketId, userId } = req.body;
 
       if (!ticketId || !userId) {
         return res
@@ -159,21 +167,18 @@ module.exports = {
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-
       // Assign the ticket to the user
-      const [updateCount] = await TicketService.update(ticketId, {
-        assignee_id: user.id,
-        assigneer_id:assignerId,
+      const [updateCount] = await TicketService.assignTicketToUser(ticketId, {
+        assigner_id:req.user.id,
+        assignee_id:userId
       });
+      ticket.reload();
 
       if (updateCount > 0) {
         res.status(200).json({
           success: true,
           message: "Ticket assigned to user successfully",
-          ticket: {
-            id: ticketId,
-            assignee_id: user.id,
-          },
+          // ticket: ticket
         });
       } else {
         res.status(400).json({
@@ -216,4 +221,129 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  totalTicketsAssignedToUser:async(req,res)=>{
+    const {id} = req.params;
+    try {
+      console.log(id);
+      
+      const tickets = await TicketService.findAll({
+        where:{
+          assignee_id:id
+        },
+        // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
+        include: [
+          {
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      });
+      if (!tickets) {
+        return responseUtil.sendResponse(res, 404, false, "Tickets not found");
+      }
+      const { data, pagination } = paginateAndSort(tickets, req.query);
+      responseUtil.sendResponse(
+        res,
+        200,
+        true,
+        "Tickets fetched successfully",
+        data,
+        pagination
+      );
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      responseUtil.sendResponse(
+        res,
+        500,
+        false,
+        "Internal server error",
+        null,
+        error.message
+      );
+    }
+  },
+  assignersTotalTickets:async(req,res)=>{
+    const {id} = req.params;
+    try {
+      const tickets = await TicketService.findAll({
+        where:{
+          assigner_id:id
+        },
+        // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
+        include: [
+          {
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      });
+      if (!tickets) {
+        return responseUtil.sendResponse(res, 404, false, "Tickets not found");
+      }
+      const { data, pagination } = paginateAndSort(tickets, req.query);
+      responseUtil.sendResponse(
+        res,
+        200,
+        true,
+        "Tickets fetched successfully",
+        data,
+        pagination
+      );
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      responseUtil.sendResponse(
+        res,
+        500,
+        false,
+        "Internal server error",
+        null,
+        error.message
+      );
+    }
+  }
 };

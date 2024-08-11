@@ -58,7 +58,12 @@ module.exports = (sequelize, DataTypes) => {
     Ticket.belongsTo(models.User,{
       foreignKey:"assignee_id",
       as:"ticket_assignee"
+    });
+    Ticket.belongsTo(models.User,{
+      foreignKey:"assigner_id",
+      as:"ticket_assigner"
     })
+
   };
   return Ticket;
 };

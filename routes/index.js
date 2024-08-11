@@ -10,7 +10,7 @@ module.exports = (app) => {
   app.use("/roleusers", require("./roleUserRoute"));
   app.use("/userpermissions", require("./userPermissionRoute"));
   app.use("/priorities",require("./priorityRoute"));
-  app.use("/tickets",require("./ticketRoute"));
+  app.use("/tickets",authenticate,require("./ticketRoute"));
   app.use("*", (_req, res) => res.status(404).json({ message: "route not found" })
   );
 };
