@@ -1,14 +1,39 @@
 // controllers/baseController.js
-const {validationResult, matchedData} = require('express-validator')
+const { validationResult, matchedData } = require("express-validator");
+const responseUtil = require("../utils/responseUtil");
+const  httpCodes= require('../middleware/httpCodes');
 module.exports = (service) => {
   return {
-    async findAll(req,res) {
+    async findAll(req, res) {
       try {
         const filter = req.query.filter || {};
         const items = await service.findAll(filter);
-        res.status(200).json(items);
+        // res.status(200).json({success:true,data:items});
+        if (!items) {
+          return responseUtil.sendResponse(
+            res,
+            httpCodes.NOT_FOUND,
+            true,
+            "Resource not found"
+          );
+        }
+        responseUtil.sendResponse(
+          res,
+          httpCodes.OK.code,
+          true,
+          "Resoruce fetched successfully",
+          tickets
+        );
       } catch (error) {
-        res.status(500).json({ message: error.stack });
+        console.error("Error fetching data:", error);
+        responseUtil.sendResponse(
+          res,
+          httpCodes.INTERNAL_SERVER_ERROR.code,
+          false,
+         httpCodes.INTERNAL_SERVER_ERROR.message,
+          null,
+          error.message
+        );
       }
     },
     async findById(req, res) {
@@ -16,46 +41,99 @@ module.exports = (service) => {
         const { id } = req.params;
         const item = await service.findById(id);
         if (!item) {
-          res.status(404).json({ message: "Item not found" });
+          responseUtil.sendResponse(res, httpCodes.NOT_FOUND.code, false, "Resource "+httpCodes.NOT_FOUND.message);
         } else {
-          res.status(200).json({ success: true, count: item.length, data: item});
+          responseUtil.sendResponse(
+            res,
+            httpCodes.OK.code,
+            true,
+            "data fetch successfully",
+            item
+          );
         }
       } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(httpCodes.INTERNAL_SERVER_ERROR.code).json({ message: error.message });
       }
     },
     async save(req, res) {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return responseUtil.sendResponse(
+          res,
+          httpCodes.UNPROCESSABLE_ENTITY.code,
+          httpCodes.UNPROCESSABLE_ENTITY.message,
+          null,
+          error.message
+        );
       }
-  
+
       try {
         const newItem = await service.save(req.body);
-        res.status(201).json({ success: true, count: newItem.length, data: newItem});
+        responseUtil.sendResponse(
+          res,
+          httpCodes.CREATED.code,
+          true,
+          "Resource created successfully",
+          newItem
+        );
       } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: error.message });
+        responseUtil.sendResponse(
+          res,
+          httpCodes.INTERNAL_SERVER_ERROR.code,
+          false,
+          httpCodes.INTERNAL_SERVER_ERROR.message,
+          null,
+          error.message
+        );
       }
     },
     async update(req, res) {
       try {
         const { id } = req.params;
+        const item = await service.findById(id);
+
+        if (!item) {
+          return responseUtil.sendResponse(res, httpCodes.NOT_FOUND.code, "Resource "+httpCodes.NOT_FOUND.message);
+        }
         const updatedItem = await service.update(id, req.body);
-        res.status(200).json({ success: true, count: updatedItem.length, data: updatedItem});
+        responseUtil.sendResponse(
+          res,
+          httpCodes.OK.code,
+          true,
+          "Resource updated successfully",
+          updatedItem
+        );
       } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("resource ", error);
+        responseUtil.sendResponse(
+          res,
+          httpCodes.INTERNAL_SERVER_ERROR.code,
+          false,
+         httpCodes.INTERNAL_SERVER_ERROR.message,
+          null,
+          error.message
+        );
       }
     },
     async delete(req, res) {
       try {
         const { id } = req.params;
-
-      const record =  await service.delete(id);
-      
-        res.status(204).json({ success: true, data:record});
-      } catch (error) {
-        res.status(500).json({ message: error.message });
+        const checkRecord = await service.findById(id);
+        if (!checkRecord) {
+          return responseUtil.sendResponse(res, httpCodes.NOT_FOUND,false, "Resource not found");
+        }
+        const record = await service.delete(id);
+        responseUtil.sendResponse(res,httpCodes.OK,true,"Resource deleted successfully",null)
+    } catch (error) {
+        console.error("Error deleting a resource:", error);
+        sendResponse(
+          res,
+          httpCodes.INTERNAL_SERVER_ERROR.code,
+          false,
+         httpCodes.INTERNAL_SERVER_ERROR.message,
+          null,
+          error.message
+        );
       }
     },
   };

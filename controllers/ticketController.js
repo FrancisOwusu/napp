@@ -2,39 +2,79 @@
 
 const baseController = require("./baseController");
 const { application } = require("../config/app");
-const { TicketService, TicketFileService } = require("../services");
+const { Op } = require("sequelize");
+const {
+  TicketService,
+  TicketFileService,
+  UserService,
+} = require("../services");
 const { validationResult, matchedData } = require("express-validator");
 const { upload, uploadMiddleware } = require("../middleware/upload");
 const ticketFileService = require("../services/ticketFileService");
 const path = require("path");
 const { where } = require("sequelize");
-
+const responseUtil = require("../utils/responseUtil");
 const models = require("../database/models/index");
+const { paginateAndSort } = require("../middleware/paginationAndSorting");
+const { request } = require("http");
 module.exports = {
   ...baseController(TicketService),
   findAll: async (req, res) => {
     try {
-      const items = await TicketService.findAll({
+      console.log(req.user.id)
+      const tickets = await TicketService.findAll({
         // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
         include: [
           {
-            model: models.Category,as:'category',// Ensure you have required association defined
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
             attributes: ["id", "name"], // Include necessary attributes from associated model
           },
           {
-            model: models.Priority,as:'priority',// Ensure you have required association defined
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
             attributes: ["id", "name"], // Include necessary attributes from associated model
           },
           {
-            model: models.User,as:'user',// Ensure you have required association defined
-            attributes: ["id", "name"], // Include necessary attributes from associated model
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
           },
         ],
+        order: [["created_at", "DESC"]],
       });
-
-      res.status(200).json(items);
+      if (!tickets) {
+        return responseUtil.sendResponse(res, 404, false, "Tickets not found");
+      }
+      const { data, pagination } = paginateAndSort(tickets, req.query);
+      responseUtil.sendResponse(
+        res,
+        200,
+        true,
+        "Tickets fetched successfully",
+        data,
+        pagination
+      );
     } catch (error) {
-      res.status(500).json({ message: error.stack });
+      console.error("Error fetching tickets:", error);
+      responseUtil.sendResponse(
+        res,
+        500,
+        false,
+        "Internal server error",
+        null,
+        error.message
+      );
     }
   },
   save: async (req, res) => {
@@ -95,6 +135,62 @@ module.exports = {
       throw new Error(error.message);
     }
   },
+  assignTicketToUser: async (req, res) => {
+    try {
+      console.log(req.user.id);
+      const { ticketId, userId } = req.body;
+
+      if (!ticketId || !userId) {
+        return res
+          .status(400)
+          .json({ error: "Ticket ID and User ID are required" });
+      }
+
+      // Find the ticket
+      const ticket = await TicketService.findOne({
+        where: {
+          id: ticketId,
+          assignee_id: {
+            [Op.eq]: null,
+          },
+        },
+      });
+
+      if (!ticket) {
+        return res
+          .status(404)
+          .json({ error: "Ticket not found or already assigned" });
+      }
+
+      // Find the user
+      const user = await UserService.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      // Assign the ticket to the user
+      const [updateCount] = await TicketService.assignTicketToUser(ticketId, {
+        assigner_id:req.user.id,
+        assignee_id:userId
+      });
+      ticket.reload();
+
+      if (updateCount > 0) {
+        res.status(200).json({
+          success: true,
+          message: "Ticket assigned to user successfully",
+          // ticket: ticket
+        });
+      } else {
+        res.status(400).json({
+          message: "Unable to assign ticket to a user",
+        });
+      }
+    } catch (error) {
+      console.error("Error assigning ticket to user:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
   downloadFile: async (req, res) => {
     try {
       const { id } = req.params;
@@ -125,4 +221,129 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  totalTicketsAssignedToUser:async(req,res)=>{
+    const {id} = req.params;
+    try {
+      console.log(id);
+      
+      const tickets = await TicketService.findAll({
+        where:{
+          assignee_id:id
+        },
+        // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
+        include: [
+          {
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      });
+      if (!tickets) {
+        return responseUtil.sendResponse(res, 404, false, "Tickets not found");
+      }
+      const { data, pagination } = paginateAndSort(tickets, req.query);
+      responseUtil.sendResponse(
+        res,
+        200,
+        true,
+        "Tickets fetched successfully",
+        data,
+        pagination
+      );
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      responseUtil.sendResponse(
+        res,
+        500,
+        false,
+        "Internal server error",
+        null,
+        error.message
+      );
+    }
+  },
+  assignersTotalTickets:async(req,res)=>{
+    const {id} = req.params;
+    try {
+      const tickets = await TicketService.findAll({
+        where:{
+          assigner_id:id
+        },
+        // attributes: ['id', 'name', 'CategoryId'], // Ensure these columns exist in your table
+        include: [
+          {
+            model: models.Category,
+            as: "category", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.Priority,
+            as: "priority", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "user", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assignee", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+          {
+            model: models.User,
+            as: "ticket_assigner", // Ensure you have required association defined
+            attributes: ["id", "first_name"], // Include necessary attributes from associated model
+          },
+        ],
+        order: [["created_at", "DESC"]],
+      });
+      if (!tickets) {
+        return responseUtil.sendResponse(res, 404, false, "Tickets not found");
+      }
+      const { data, pagination } = paginateAndSort(tickets, req.query);
+      responseUtil.sendResponse(
+        res,
+        200,
+        true,
+        "Tickets fetched successfully",
+        data,
+        pagination
+      );
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      responseUtil.sendResponse(
+        res,
+        500,
+        false,
+        "Internal server error",
+        null,
+        error.message
+      );
+    }
+  }
 };

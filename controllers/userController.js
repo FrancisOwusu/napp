@@ -3,10 +3,10 @@
 const baseController = require("./baseController");
 const { UserService, EmailService } = require("../services");
 const { hashPassword } = require("../utils/bcrypt");
-const { wrap } = require("../utils/response");
+// const { wrap } = require("../utils/response");
 const role = require("../database/models/role");
 const user = require("../database/models/user");
-const {validationResult, matchedData} = require('express-validator')
+const { validationResult, matchedData } = require("express-validator");
 
 module.exports = {
   ...baseController(UserService),
@@ -14,33 +14,32 @@ module.exports = {
     try {
       let filter =
         {
-          where:{
-            first_name:req.first_name?? null
+          where: {
+            first_name: req.first_name ?? null,
           },
           // order:[role, 'created_created', 'DESC'],
-          limit: 10
+          limit: 10,
         } ?? {};
 
       // Query active users along with associated roles
       const items1 = UserService.findAll({
-          // where: {
-          //   isActive: true // Assuming isActive is a column in the User model
-          // },
-          // include: [
-          //   {
-          //     model: role,
-          //     through: { attributes: [] } // To exclude the junction table attributes
-          //   }
-          // ]
-        })
+        // where: {
+        //   isActive: true // Assuming isActive is a column in the User model
+        // },
+        // include: [
+        //   {
+        //     model: role,
+        //     through: { attributes: [] } // To exclude the junction table attributes
+        //   }
+        // ]
+      })
         .then((users) => {
           console.log(users);
         })
         .catch((error) => {
           console.error(error);
         });
-      const items = await UserService.findAll(filter,
-      {include:role});
+      const items = await UserService.findAll(filter, { include: role });
       res.status(200).json(items);
     } catch (error) {
       res.status(500).json({ message: error.stack });
@@ -51,7 +50,7 @@ module.exports = {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     try {
       const { password } = req.body;
       let hashPas = await hashPassword(password);

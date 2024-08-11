@@ -1,5 +1,6 @@
 "use strict";
 const { Model, Sequelize } = require("sequelize");
+const Ticket = require('./../models/ticket');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -61,5 +62,9 @@ module.exports = (sequelize, DataTypes) => {
   //       console.error('Error adding role to user:', error);
   //   }
   // };
+
+  User.associate = models => {
+    User.hasMany(models.Ticket,{foreignKey:'assignee_id'});
+  };
   return User;
 };
