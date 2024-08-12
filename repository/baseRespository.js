@@ -61,5 +61,12 @@ module.exports = (model) => {
         throw new Error(error);
       }
     },
+    model: async () => {
+      try {
+        return await model;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
   };
 };
