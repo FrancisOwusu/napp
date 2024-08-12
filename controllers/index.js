@@ -7,5 +7,6 @@ module.exports = {
     RoleUserController:require("./roleUserController"),
     UserPermissionController:require('./userPermissionController'),
     PriorityController: require('./priorityController'),
-    TicketController:require('./ticketController')
+    TicketController:require('./ticketController'),
+    DashboardController:require('./dashboardController'),
 }
