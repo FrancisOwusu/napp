@@ -12,5 +12,6 @@ module.exports ={
     UserPermissionService: require('./userPermissionService'),
     PriorityService:require('./priorityService'),
     TicketService: require('./ticketService'),
-    TicketFileService:require('./ticketFileService')
+    TicketFileService:require('./ticketFileService'),
+    DashboardService:require('./dashboardService')
 }
