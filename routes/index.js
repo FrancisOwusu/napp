@@ -11,6 +11,8 @@ module.exports = (app) => {
   app.use("/userpermissions", require("./userPermissionRoute"));
   app.use("/priorities",require("./priorityRoute"));
   app.use("/tickets",authenticate,require("./ticketRoute"));
+  app.use("/dashboard",authenticate,require("./dashboardRoute"));
+ 
   app.use("*", (_req, res) => res.status(404).json({ message: "route not found" })
   );
 };
