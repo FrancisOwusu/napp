@@ -35,7 +35,11 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Ticket",
       tableName: "tickets",
       paranoid: true,
-
+      resolvedAt: {
+        type: DataTypes.DATE,
+        allowNull: true, // Allow null for unresolved tickets
+      },
+      
       createdAt: "created_at",
       updatedAt: "updated_at",
       // If you want to give a custom name to the deletedAt column
