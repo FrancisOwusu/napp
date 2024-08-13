@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add seed commands here.
      *
@@ -11,12 +11,26 @@ module.exports = {
      *   name: 'John Doe',
      *   isBetaMember: false
      * }], {});
-    */
+     */
 
     await queryInterface.bulkInsert("ticket_statuses", [
-   
       {
-        name: "Completed",
+        name: "New",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Open",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "On Hold",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Escalated",
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -25,21 +39,40 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
-      { name: "In_Progress" ,
-      created_at: new Date(),
-        updated_at: new Date()},
-      { name: "Closed",
-      created_at: new Date(),
-        updated_at: new Date() },
+      {
+        name: "Resolved",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Closed",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Closed",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Reopened",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Canceled",
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
     ]);
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-  }
+  },
 };
