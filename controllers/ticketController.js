@@ -50,6 +50,11 @@ module.exports = {
             as: "ticket_assigner", // Ensure you have required association defined
             attributes: ["id", "first_name"], // Include necessary attributes from associated model
           },
+          {
+            model: models.TicketStatus,
+            as: "status", // Ensure you have required association defined
+            attributes: ["id", "name"], // Include necessary attributes from associated model
+          },
         ],
         order: [["created_at", "DESC"]],
       });
