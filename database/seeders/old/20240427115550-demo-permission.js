@@ -4,13 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
+     * Add seed commands here
      */
     await queryInterface.bulkInsert("permissions", [
       {
@@ -23,22 +17,15 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
-      { name: "update_role" ,
-      created_at: new Date(),
-        updated_at: new Date()},
-      { name: "delete_role",
-      created_at: new Date(),
-        updated_at: new Date() },
+      { name: "update_role", created_at: new Date(), updated_at: new Date() },
+      { name: "delete_role", created_at: new Date(), updated_at: new Date() },
     ]);
   },
 
   async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
      */
-    return await queryInterface.bulkDelete('permissions', null, {});
+    return await queryInterface.bulkDelete("permissions", null, {});
   },
 };

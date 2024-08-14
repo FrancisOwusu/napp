@@ -50,11 +50,6 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        name: "Closed",
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
         name: "Reopened",
         created_at: new Date(),
         updated_at: new Date(),
@@ -74,5 +69,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    await queryInterface.bulkDelete('ticket_statuses', null, {});
   },
 };
