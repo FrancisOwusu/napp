@@ -13,5 +13,6 @@ module.exports ={
     PriorityService:require('./priorityService'),
     TicketService: require('./ticketService'),
     TicketFileService:require('./ticketFileService'),
-    DashboardService:require('./dashboardService')
+    DashboardService:require('./dashboardService'),
+    TicketStatusRepository:require('./ticketStatusService')
 }
