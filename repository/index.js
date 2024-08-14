@@ -9,5 +9,6 @@ PermissionRepository: require('./permissionRepository'),
 PriorityRepository:require('./priorityRepository'),
 TicketRepository:require('./ticketRepository'),
 TicketFileRepository:require('./ticketFileRepository'),
-DashboardRepository:require('./dashboardRepository')
+DashboardRepository:require('./dashboardRepository'),
+TicketStatusRepositroy:require('./ticketStatusRepository')
 }
