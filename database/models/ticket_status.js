@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'TicketStatus',
+  
+    tableName: "ticket_statuses",
   });
+  TicketStatus.associate = models => {
+    TicketStatus.hasMany(models.Ticket,{foreignKey:'status_id'});
+  };
+
   return TicketStatus;
 };
