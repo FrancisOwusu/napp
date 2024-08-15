@@ -12,7 +12,7 @@ module.exports = (app) => {
   app.use("/priorities",require("./priorityRoute"));
   app.use("/tickets",authenticate,require("./ticketRoute"));
   app.use("/dashboard",authenticate,require("./dashboardRoute"));
- 
+ app.use("/ticket/statuses",require("./ticketStatusRoute"))
   app.use("*", (_req, res) => res.status(404).json({ message: "route not found" })
   );
 };
