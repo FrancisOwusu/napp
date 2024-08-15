@@ -22,7 +22,7 @@ module.exports = (service) => {
           httpCodes.OK.code,
           true,
           "Resoruce fetched successfully",
-          tickets
+          items
         );
       } catch (error) {
         console.error("Error fetching data:", error);
