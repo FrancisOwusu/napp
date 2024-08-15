@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Ticket",
       tableName: "tickets",
       paranoid: true,
-      resolvedAt: {
+      resolved_at: {
         type: DataTypes.DATE,
         allowNull: true, // Allow null for unresolved tickets
       },
