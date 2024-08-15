@@ -24,19 +24,19 @@ module.exports = {
         
             const newTickets = await models.Ticket.count({
               where: {
-                status: 'new',
+                status_id: 1,
               },
             }); // Tickets that are new
         
             const inProgressTickets = await models.Ticket.count({
               where: {
-                status: 'in_progress',
+                status_id: 3,
               },
             }); // Tickets that are in progress
         
             const completedTickets = await models.Ticket.count({
               where: {
-                status: 'completed',
+                status_id: 3,
               },
             }); // Tickets that are completed
         
