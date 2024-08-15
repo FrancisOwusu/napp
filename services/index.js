@@ -13,5 +13,5 @@ module.exports = {
   TicketService: require("./ticketService"),
   TicketFileService: require("./ticketFileService"),
   DashboardService: require("./dashboardService"),
-  TicketStatusRepository: require("./ticketStatusService"),
+  TicketStatusService: require("./ticketStatusService"),
 };
