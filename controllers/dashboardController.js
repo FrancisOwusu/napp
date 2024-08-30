@@ -1,7 +1,7 @@
 const dashboardService = require('../services/dashboardService')
-const  Ticket = require('../database/models')
 const models = require('../database/models/index');
-const Sequelize=require('sequelize')
+const Sequelize=require('sequelize');
+const { DashboardService } = require('../services');
 // const Ticket = models.
 module.exports = {
     index:async(req,res)=>{
@@ -53,5 +53,14 @@ module.exports = {
             res.status(500).json({ error: 'Internal server error' });
           } 
      
+    },
+    getTicketStatistics: async (req,res) => {
+      try {
+        const ticketStats = await DashboardService.getTicketStatistics();
+        res.status(200).json(ticketStats);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      } 
     }
 }

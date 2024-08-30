@@ -1,4 +1,5 @@
-const Ticket = require('../database/models/ticket')
+const Ticket = require('../database/models/ticket');
+
 module.exports = {
     // Recursive function to generate a unique ticker number
     generateTicketNumber:async()=>{
@@ -12,5 +13,6 @@ module.exports = {
         if(ticket){
 
         }
-    }
+    },
+  
 }
