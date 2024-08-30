@@ -6,7 +6,16 @@ const {  userValidationRules} = require('../middleware/validations/userValidatio
 
 
 let router = express.Router();
-
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get a list of users
+ *     description: Retrieve a list of users from the database.
+ *     responses:
+ *       200:
+ *         description: Successful response with a list of users.
+ */
 router.get('/', moduleController.findAll);
 router.get('/:id', moduleController.findById);
 router.post('/', userValidationRules(),moduleController.save);

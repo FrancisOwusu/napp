@@ -10,12 +10,12 @@ const { myLogger, accessControl, authMiddleware } = require("./middleware");
 const limiter = require("./middleware/rateLimiter")
 const app = express();
 
+
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(myLogger);
-
 //rate
 // app.use(limiter)
 // app.use(accessControl);
